@@ -14,9 +14,8 @@ jobs:
           git config --global --add safe.directory /var/www/html/CI-CD-django
           cd /var/www/html/CI-CD-django
           git pull origin main
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python manage.py migrate --no-input
-          python manage.py collectstatic --no-input
+          /var/www/html/CI-CD-django/venv/bin/pip install -r requirements.txt
+          /var/www/html/CI-CD-django/venv/bin/python manage.py migrate --no-input
+          /var/www/html/CI-CD-django/venv/bin/python manage.py collectstatic --no-input
           sudo systemctl restart gunicorn1.service
           sudo systemctl reload nginx
