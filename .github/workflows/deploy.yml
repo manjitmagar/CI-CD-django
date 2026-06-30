@@ -16,9 +16,9 @@ jobs:
           cd /var/www/html/CI-CD-django
           git pull origin main
 
-      - name: Installing Requirements
-        run: |
-          /var/www/html/CI-CD-django/venv/bin/pip install -r requirements.txt
+      # - name: Installing Requirements
+      #   run: |
+      #     /var/www/html/CI-CD-django/venv/bin/pip install -r requirements.txt
 
       - name: Migrating
         run: |
