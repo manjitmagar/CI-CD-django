@@ -15,21 +15,24 @@ jobs:
           cd /var/www/html/CI-CD-django
           git pull origin main
 
-      # - name: Installing Requirements
-      #   run: |
-      #     /var/www/html/CI-CD-django/venv/bin/pip install -r requirements.txt
+      - name: Installing Requirements
+        run: |
+          cd /var/www/html/CI-CD-django
+          venv/bin/pip install -r requirements.txt
 
       - name: Migrating
         run: |
-         /var/www/html/CI-CD-django/venv/bin/python manage.py migrate --no-input
+          cd /var/www/html/CI-CD-django
+          venv/bin/python manage.py migrate --no-input
 
       - name: CollectStatic
         run: |
-         /var/www/html/CI-CD-django/venv/bin/python manage.py collectstatic --no-input
+          cd /var/www/html/CI-CD-django
+          venv/bin/python manage.py collectstatic --no-input
 
       - name: Restarting Gunicorn1 Service
         run: |
-         sudo systemctl restart gunicorn1.service
+          sudo systemctl restart gunicorn1.service
 
       - name: Reloading Nginx
         run: |
