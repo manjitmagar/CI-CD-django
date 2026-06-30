@@ -12,7 +12,6 @@ jobs:
       - name: Pulling
         run: |
           git config --global --add safe.directory /var/www/html/CI-CD-django
-          git config --global --add safe.directory /var/www/html/CI-CD-django
           cd /var/www/html/CI-CD-django
           git pull origin main
 
