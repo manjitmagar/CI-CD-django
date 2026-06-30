@@ -9,13 +9,29 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Pull and deploy
+      - name: Pulling
         run: |
+          git config --global --add safe.directory /var/www/html/CI-CD-django
           git config --global --add safe.directory /var/www/html/CI-CD-django
           cd /var/www/html/CI-CD-django
           git pull origin main
+
+      - name: Installing Requirements
+        run: |
           /var/www/html/CI-CD-django/venv/bin/pip install -r requirements.txt
-          /var/www/html/CI-CD-django/venv/bin/python manage.py migrate --no-input
-          /var/www/html/CI-CD-django/venv/bin/python manage.py collectstatic --no-input
-          sudo systemctl restart gunicorn1.service
+
+      - name: Migrating
+        run: |
+         /var/www/html/CI-CD-django/venv/bin/python manage.py migrate --no-input
+
+      - name: CollectStatic
+        run: |
+         /var/www/html/CI-CD-django/venv/bin/python manage.py collectstatic --no-input
+
+      - name: Restarting Gunicorn1 Service
+        run: |
+         sudo systemctl restart gunicorn1.service
+
+      - name: Reloading Nginx
+        run: |
           sudo systemctl reload nginx
