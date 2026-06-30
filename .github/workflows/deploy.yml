@@ -5,35 +5,52 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  pull-code:
+    name: Pull latest code
     runs-on: self-hosted
-
     steps:
-      - name: Pulling
+      - name: Git pull
         run: |
           git config --global --add safe.directory /var/www/html/CI-CD-django
           cd /var/www/html/CI-CD-django
           git pull origin main
 
-      - name: Installing Requirements
+  install-requirements:
+    name: Install requirements
+    needs: pull-code
+    runs-on: self-hosted
+    steps:
+      - name: Pip install
         run: |
           cd /var/www/html/CI-CD-django
           venv/bin/pip install -r requirements.txt
 
-      - name: Migrating
+  migrate:
+    name: Run migrations
+    needs: install-requirements
+    runs-on: self-hosted
+    steps:
+      - name: Django migrate
         run: |
           cd /var/www/html/CI-CD-django
           venv/bin/python manage.py migrate --no-input
 
-      - name: CollectStatic
+  collect-static:
+    name: Collect static files
+    needs: migrate
+    runs-on: self-hosted
+    steps:
+      - name: Collectstatic
         run: |
           cd /var/www/html/CI-CD-django
           venv/bin/python manage.py collectstatic --no-input
 
-      - name: Restarting Gunicorn1 Service
-        run: |
-          sudo systemctl restart gunicorn1.service
-
-      - name: Reloading Nginx
-        run: |
-          sudo systemctl reload nginx
+  restart-services:
+    name: Restart Gunicorn and Nginx
+    needs: collect-static
+    runs-on: self-hosted
+    steps:
+      - name: Restart Gunicorn
+        run: sudo systemctl restart gunicorn1.service
+      - name: Reload Nginx
+        run: sudo systemctl reload nginx
